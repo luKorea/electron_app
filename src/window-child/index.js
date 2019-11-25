@@ -6,25 +6,22 @@ createWindow = _ => {
     // 父窗口
     parentWin = new BrowserWindow({
         width: 600,
-        height: 600,
+        height: 600
     });
-    parentWin.on('ready-to-show', _ =>{
-        parentWin.show();
-    });
+    // 子窗口
+    childWin = new BrowserWindow({width: 300, height: 300, parent: parentWin});
     // 加载index.html文件
     parentWin.loadFile('index.html');
+    childWin.loadFile('child.html');
 
     // Mac中设置图片无效
     if (process.platform !== 'darwin') {
         parentWin.setIcon('../images/logo.ico');
+        childWin.setIcon('../images/logo.ico');
     }
     // 当 window 被关闭，这个事件会被触发。
-    parentWin.on('closed', () => {
-        // 取消引用 window 对象，如果你的应用支持多窗口的话，
-        // 通常会把多个 window 对象存放在一个数组里面，
-        // 与此同时，你应该删除相应的元素。
-        parentWin = null
-    })
+    parentWin.on('closed', _ => parentWin = null);
+    childWin.on('closed', _ => childWin = null);
 };
 
 // Electron 会在初始化后并准备
